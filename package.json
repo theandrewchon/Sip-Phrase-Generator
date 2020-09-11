@@ -8,6 +8,7 @@
 		"start:prod": "node server.js",
 		"start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
 		"client": "cd client && npm run start",
+		"server": "nodemon server.js",
 		"seed": "node scripts/seedDB.js",
 		"install": "cd client && npm install",
 		"build": "cd client && npm run build",
@@ -25,11 +26,7 @@
 	},
 	"homepage": "https://github.com/theandrewchon/Sip-Phrase-Generator#readme",
 	"dependencies": {
-		"@chakra-ui/core": "^0.8.0",
-		"@emotion/core": "^10.0.35",
-		"@emotion/styled": "^10.0.27",
 		"axios": "^0.20.0",
-		"emotion-theming": "^10.0.27",
 		"express": "^4.17.1",
 		"if-env": "^1.0.4",
 		"mongoose": "^5.10.5"
