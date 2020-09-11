@@ -6,6 +6,6 @@ const sentencesSchema = new Schema({
 	korean: { type: String, required: true },
 });
 
-const Sentences = mongoose.module('Sentences', sentencesSchema);
+const Sentences = mongoose.model('Sentences', sentencesSchema);
 
 module.exports = Sentences;

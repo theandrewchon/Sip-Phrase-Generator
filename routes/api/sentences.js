@@ -13,3 +13,5 @@ router
 	.get(sentencesController.findById)
 	.put(sentencesController.update)
 	.delete(sentencesController.remove);
+
+module.exports = router;
