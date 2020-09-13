@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Heading, Flex, Text } from '@chakra-ui/core';
+import { Box, Heading, Flex, Text, Link } from '@chakra-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 
 const MenuItems = ({ children }) => (
 	<Text mt={{ base: 4, md: 0 }} mr={6} display="block">
@@ -30,7 +31,7 @@ const Header = (props) => {
 				justifyContent={{ base: 'space-between', md: 'flex-start' }}
 			>
 				<Heading as="h1" size="lg" letterSpacing={'-.1rem'}>
-					SIP Phrase Generator
+					<Link href="/">S.P.G.</Link>
 				</Heading>
 
 				<Box display={{ sm: 'block', md: 'none' }} onClick={handleToggle}>
@@ -52,8 +53,16 @@ const Header = (props) => {
 				alignItems="center"
 				flexGrow={1}
 			>
-				<MenuItems>Search</MenuItems>
-				<MenuItems>Database</MenuItems>
+				<MenuItems>
+					<Link as={RouterLink} to="/">
+						Search
+					</Link>
+				</MenuItems>
+				<MenuItems>
+					<Link as={RouterLink} to="/database">
+						Database
+					</Link>
+				</MenuItems>
 			</Box>
 		</Flex>
 	);
