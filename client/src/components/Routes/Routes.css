@@ -5,6 +5,13 @@
 	width: auto;
 }
 
+.loadingSpinner {
+	height: calc(100vh - 30px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 @media screen and (min-width: 1024px) {
 	.container {
 		max-width: 960px;

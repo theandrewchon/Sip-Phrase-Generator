@@ -11,8 +11,8 @@ const Routes = () => {
 
 	if (databaseStatus === 'loading') {
 		return (
-			<div style={{ margin: '0 auto' }}>
-				<Spinner size="xl" />;
+			<div className="loadingSpinner">
+				<Spinner size="xl" />
 			</div>
 		);
 	}
