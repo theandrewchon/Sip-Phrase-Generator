@@ -4,6 +4,9 @@ import App from './App';
 import store from './app/store';
 import { Provider } from 'react-redux';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
+import { fetchDatabase } from './slices/databaseSlice';
+
+store.dispatch(fetchDatabase());
 
 ReactDOM.render(
 	<React.StrictMode>

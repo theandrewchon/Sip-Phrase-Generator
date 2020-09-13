@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-	getSentences: function () {
+	getAllSentences: function () {
 		return axios.get('/api/sentences');
 	},
 	getSentence: function (id) {
