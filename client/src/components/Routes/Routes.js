@@ -3,8 +3,19 @@ import { Route, Switch } from 'react-router-dom';
 import './Routes.css';
 import HomePage from '../../pages/HomePage';
 import Database from '../../pages/Database';
+import { useSelector } from 'react-redux';
+import { Spinner } from '@chakra-ui/core';
 
 const Routes = () => {
+	const databaseStatus = useSelector((state) => state.database.status);
+
+	if (databaseStatus === 'loading') {
+		return (
+			<div style={{ margin: '0 auto' }}>
+				<Spinner size="xl" />;
+			</div>
+		);
+	}
 	return (
 		<section className="container">
 			<Switch>
