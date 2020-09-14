@@ -15,8 +15,8 @@ import {
 	SimpleGrid,
 	Stack,
 	Text,
+	useToast,
 } from '@chakra-ui/core';
-import { Link } from 'react-router-dom';
 import { copyText, removePunctuation } from '../../lib/util';
 import './HomePage.css';
 
@@ -27,6 +27,7 @@ const HomePage = () => {
 	const [results, setResults] = useState({ empty: [], sentences: [] });
 	console.log('HomePage -> results', results);
 	const database = useSelector(selectDatabase);
+	const toast = useToast();
 
 	const handleSubmit = () => {
 		const sentenceArray = [];
@@ -124,7 +125,20 @@ const HomePage = () => {
 				<SimpleGrid columns={2} spacing={6}>
 					<Box p={3} bg="gray.50">
 						<span>Results:</span>
-						<Button bg="cyan.400" ml={6} onClick={copyText}>
+						<Button
+							bg="cyan.400"
+							size="sm"
+							ml={6}
+							onClick={() => {
+								copyText();
+								toast({
+									title: 'JSON Copied',
+									status: 'success',
+									duration: 2000,
+									isClosable: true,
+								});
+							}}
+						>
 							Copy results
 						</Button>
 						<div id="json">
