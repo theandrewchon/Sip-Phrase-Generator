@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../util/API';
+import API from '../lib/API';
 
 export const fetchDatabase = createAsyncThunk(
 	'database/fetchDatabase',
@@ -19,7 +19,7 @@ export const databaseSlice = createSlice({
 		},
 		[fetchDatabase.fulfilled]: (state, action) => {
 			state.status = 'succeeded';
-			state.data.push(action.payload);
+			state.data = [...action.payload];
 		},
 		[fetchDatabase.rejected]: (state, action) => {
 			state.status = 'failed';
