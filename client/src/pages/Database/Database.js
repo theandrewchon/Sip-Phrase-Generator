@@ -2,14 +2,33 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import API from '../../lib/util'
 import { selectDatabase } from '../../slices/databaseSlice';
-import { Button, Link, Text, Textarea } from '@chakra-ui/core'
+import {
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogOverlay,
+	Button,
+	Link,
+	Text,
+	Textarea,
+} from '@chakra-ui/core'
 
 const Database = () => {
 	const [input, setInput] = useState()
+	const [isConfirmOpen, setIsConfirmOpen] = useState();
+	const cancelRef = React.useRef();
+
+
 	const database = useSelector(selectDatabase);
 
+	const onConfirmClose = () => setIsConfirmOpen(false);
+
+
 	const handleSubmit = () => {
-		alert('hi')
+		alert('submitted')
+		setIsConfirmOpen(false)
 	}
 	return <div>
 		<header>
@@ -27,10 +46,36 @@ const Database = () => {
 			onChange={(e) => { setInput(e.target.value) }}
 			placeholder="Make sure entries are valid JSONs"
 			value={input} />
-		<Button color="blue.500" my={3} onClick={handleSubmit}>
+		<Button color="blue.500" my={3} onClick={() => setIsConfirmOpen(true)}>
 			Submit New Entries
 			</Button>
-	</div>;
+
+		<AlertDialog
+			isOpen={isConfirmOpen}
+			leastDestructiveRef={cancelRef}
+			onClose={onConfirmClose}
+		>
+			<AlertDialogOverlay />
+			<AlertDialogContent>
+				<AlertDialogHeader fontSize="lg" fontWeight="bold">
+					Delete Customer
+			</AlertDialogHeader>
+
+				<AlertDialogBody>
+					Are you sure? You can't undo this action afterwards.
+			</AlertDialogBody>
+
+				<AlertDialogFooter>
+					<Button ref={cancelRef} onClick={onConfirmClose}>
+						Cancel
+				</Button>
+					<Button variantColor="green" onClick={handleSubmit} ml={3}>
+						Submit
+				</Button>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	</div >;
 };
 
 export default Database;
