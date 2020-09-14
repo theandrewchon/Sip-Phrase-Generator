@@ -19,12 +19,11 @@ const Header = (props) => {
 			justify="space-between"
 			wrap="wrap"
 			padding="1rem"
-			bg="teal.500"
+			bg="blue.900"
 			color="white"
 			{...props}
 		>
 			<Flex
-				borderColor="red"
 				align="center"
 				mr={{ md: '5' }}
 				width={{ base: '100%', md: 'auto' }}
@@ -54,12 +53,12 @@ const Header = (props) => {
 				flexGrow={1}
 			>
 				<MenuItems>
-					<Link as={RouterLink} to="/">
+					<Link onClick={handleToggle} as={RouterLink} to="/">
 						Search
 					</Link>
 				</MenuItems>
-				<MenuItems>
-					<Link as={RouterLink} to="/database">
+				<MenuItems >
+					<Link as={RouterLink} to="/database" onClick={handleToggle}>
 						Database
 					</Link>
 				</MenuItems>
