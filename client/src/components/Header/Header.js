@@ -57,10 +57,16 @@ const Header = (props) => {
 						Search
 					</Link>
 				</MenuItems>
-				<MenuItems >
+				<MenuItems>
 					<Link as={RouterLink} to="/database" onClick={handleToggle}>
 						Database
 					</Link>
+				</MenuItems>
+				<MenuItems>
+					<Link href="https://spg-english.herokuapp.com/">English SPG</Link>
+				</MenuItems>
+				<MenuItems>
+					<Link href="https://spg-korean.herokuapp.com/">Korean SPG</Link>
 				</MenuItems>
 			</Box>
 		</Flex>
