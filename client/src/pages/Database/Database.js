@@ -33,7 +33,6 @@ const Database = () => {
 		debounce((q) => handleSearch(q), 500),
 		[]
 	);
-
 	const database = useSelector(selectDatabase);
 	const toast = useToast();
 
@@ -66,7 +65,7 @@ const Database = () => {
 			try {
 				await API.saveSentences(entries);
 				toast({
-					title: 'Submitted Entries',
+					title: 'Submitted Entries, refresh to see',
 					status: 'success',
 					duration: 2000,
 					isClosable: true,
@@ -119,11 +118,6 @@ const Database = () => {
 		setResults(results);
 	};
 
-	const handleEnter = (event) => {
-		if (event.key === 'Enter') {
-			handleSearch();
-		}
-	};
 	return (
 		<div>
 			<header>

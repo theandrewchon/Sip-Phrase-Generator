@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { compact } from 'lodash-es';
+import { compact, debounce } from 'lodash-es';
 import { selectDatabase } from '../../slices/databaseSlice';
 import {
 	Badge,
 	Box,
 	Button,
-	ButtonGroup,
 	Input,
 	List,
 	ListItem,
@@ -21,15 +20,21 @@ import { copyText, removePunctuation } from '../../lib/util';
 import './HomePage.css';
 
 const HomePage = () => {
-	const [input, setInput] = useState('');
 	const [primaryLanguage, setPrimaryLanguage] = useState('english');
 	const [jsonType, setJsonType] = useState('word');
 	const [results, setResults] = useState({ empty: [], sentences: [] });
-	console.log('HomePage -> results', results);
 	const database = useSelector(selectDatabase);
 	const toast = useToast();
+	const delayedSearch = useCallback(
+		debounce((q) => handleSubmit(q), 500),
+		[]
+	);
 
-	const handleSubmit = () => {
+	const handleChange = (e) => {
+		delayedSearch(e.target.value);
+	};
+
+	const handleSubmit = (input) => {
 		const sentenceArray = [];
 		const noResultsArray = [];
 		const wordArray = compact(
@@ -61,35 +66,11 @@ const HomePage = () => {
 		setResults({ empty: noResultsArray, sentences: sentenceArray });
 	};
 
-	const handleClear = () => {
-		setInput('');
-		setResults({ empty: [], sentences: [] });
-	};
-
 	return (
 		<div>
 			<form>
-				<Input
-					onChange={(e) => setInput(e.target.value)}
-					placeholder="search"
-					variant="filled"
-					value={input}
-				/>
+				<Input onChange={handleChange} placeholder="search" variant="filled" />
 				<SimpleGrid minChildWidth="200px" my={3}>
-					<Box>
-						<ButtonGroup mt={3} spacing={3}>
-							<Button
-								leftIcon="search"
-								onClick={handleSubmit}
-								variantColor="green"
-							>
-								Search
-							</Button>
-							<Button leftIcon="close" onClick={handleClear} variantColor="red">
-								Clear
-							</Button>
-						</ButtonGroup>
-					</Box>
 					<Box>
 						<Text>Primary Language</Text>
 						<RadioGroup

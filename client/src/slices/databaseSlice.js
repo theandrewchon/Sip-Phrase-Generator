@@ -12,7 +12,7 @@ export const fetchDatabase = createAsyncThunk(
 export const databaseSlice = createSlice({
 	name: 'database',
 	initialState: { data: [], status: 'idle', error: null },
-	reducers: {},
+
 	extraReducers: {
 		[fetchDatabase.pending]: (state) => {
 			state.status = 'loading';
@@ -27,8 +27,6 @@ export const databaseSlice = createSlice({
 		},
 	},
 });
-
-export const {} = databaseSlice.actions;
 
 export const selectDatabase = (state) => state.database.data;
 
