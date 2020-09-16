@@ -31,7 +31,7 @@ const Database = () => {
 	const cancelRef = useRef();
 	const delayedSearch = useCallback(
 		debounce((q) => handleSearch(q), 500),
-		[]
+		[radio]
 	);
 	const database = useSelector(selectDatabase);
 	const toast = useToast();
@@ -93,7 +93,7 @@ const Database = () => {
 	};
 
 	const handleSearch = (search) => {
-		const results = [];
+		const resultsArr = [];
 		if (!search) return;
 
 		database.forEach((obj) => {
@@ -104,18 +104,18 @@ const Database = () => {
 						english.toLowerCase()
 					)
 				) {
-					results.push(obj);
+					resultsArr.push(obj);
 				}
 			} else {
 				//search Korean
 				const koreanString = removePunctuation(korean);
 				const koreanArr = koreanString.split(' ');
 				if (koreanArr.includes(removePunctuation(search.trim()))) {
-					results.push(obj);
+					resultsArr.push(obj);
 				}
 			}
 		});
-		setResults(results);
+		setResults(resultsArr);
 	};
 
 	return (
@@ -192,6 +192,7 @@ const Database = () => {
 				{results.map((obj, index) => (
 					<Table entry={obj} key={index} />
 				))}
+				{results.length === 0 && <Text>No results displayed</Text>}
 			</section>
 		</div>
 	);

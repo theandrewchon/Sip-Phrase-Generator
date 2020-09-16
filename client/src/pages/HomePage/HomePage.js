@@ -27,7 +27,7 @@ const HomePage = () => {
 	const toast = useToast();
 	const delayedSearch = useCallback(
 		debounce((q) => handleSubmit(q), 500),
-		[]
+		[primaryLanguage]
 	);
 
 	const handleChange = (e) => {
@@ -47,10 +47,11 @@ const HomePage = () => {
 						return true;
 					}
 					return false;
+				} else {
+					const koreanString = removePunctuation(phrase.korean);
+					const koreanArray = compact(koreanString.split(' '));
+					return koreanArray.includes(word);
 				}
-				const koreanString = removePunctuation(phrase.korean);
-				const koreanArray = compact(koreanString.split(' '));
-				return koreanArray.includes(word);
 			});
 			if (results.length) {
 				sentenceArray.push({
@@ -141,19 +142,19 @@ const HomePage = () => {
 													)}
 												</code>
 											) : (
-												<code>
-													{JSON.stringify(
-														{
-															type: 'phrase',
-															content: `${e.sentence.korean}`,
-															translation: `${e.sentence.english}`,
-															examples: [],
-														},
-														null,
-														4
-													)}
-												</code>
-											)
+													<code>
+														{JSON.stringify(
+															{
+																type: 'phrase',
+																content: `${e.sentence.korean}`,
+																translation: `${e.sentence.english}`,
+																examples: [],
+															},
+															null,
+															4
+														)}
+													</code>
+												)
 										) : primaryLanguage === 'english' ? (
 											<code>
 												{JSON.stringify(
@@ -169,20 +170,20 @@ const HomePage = () => {
 												)}
 											</code>
 										) : (
-											<code>
-												{JSON.stringify(
-													{
-														type: 'word',
-														word: e.query,
-														content: `${e.sentence.korean}`,
-														translation: `${e.sentence.english}`,
-														examples: [],
-													},
-													null,
-													4
+													<code>
+														{JSON.stringify(
+															{
+																type: 'word',
+																word: e.query,
+																content: `${e.sentence.korean}`,
+																translation: `${e.sentence.english}`,
+																examples: [],
+															},
+															null,
+															4
+														)}
+													</code>
 												)}
-											</code>
-										)}
 										{}
 
 										{index !== results.sentences.length - 1 ? ',' : ''}
