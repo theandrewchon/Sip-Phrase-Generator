@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import API from '../../lib/API';
 import { selectDatabase } from '../../slices/databaseSlice';
@@ -28,6 +28,7 @@ const Database = () => {
 	const [isConfirmOpen, setIsConfirmOpen] = useState();
 	const [radio, setRadio] = useState('english');
 	const [results, setResults] = useState([]);
+	const [lang, setLang] = useState(null)
 	const cancelRef = useRef();
 	const delayedSearch = useCallback(
 		debounce((q) => handleSearch(q), 500),
@@ -35,6 +36,18 @@ const Database = () => {
 	);
 	const database = useSelector(selectDatabase);
 	const toast = useToast();
+
+	useEffect(() => {
+		const init = () => {
+			const url = window.location.href
+			if (url.includes('korean')) {
+				setLang('korean')
+			} else {
+				setLang('english')
+			}
+		}
+		if (lang === null) init()
+	}, [lang])
 
 	const onConfirmClose = () => setIsConfirmOpen(false);
 
@@ -139,7 +152,8 @@ const Database = () => {
 				onChange={(e) => {
 					setInput(e.target.value);
 				}}
-				placeholder="Make sure entries are valid JSONs"
+				placeholder={lang === 'korean' ? "Upload to database for KOREAN leaners"
+					: 'Upload to database for ENGLISH learners'}
 				value={input}
 			/>
 			<Button color="blue.500" my={3} onClick={() => setIsConfirmOpen(true)}>
