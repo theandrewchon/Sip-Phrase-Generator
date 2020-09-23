@@ -13,3 +13,8 @@ export const copyText = () => {
 	document.execCommand('copy');
 	document.body.removeChild(dummy);
 };
+
+
+export const fixQuotes = (string) => {
+	return string.replace(/[\u2018\u2019]/g, "'")
+}

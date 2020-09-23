@@ -16,8 +16,7 @@ import {
 	Text,
 	useToast,
 } from '@chakra-ui/core';
-import { copyText, removePunctuation } from '../../lib/util';
-import './HomePage.css';
+import { copyText, removePunctuation, fixQuotes } from '../../lib/util';
 
 const HomePage = () => {
 	const [primaryLanguage, setPrimaryLanguage] = useState('english');
@@ -38,12 +37,13 @@ const HomePage = () => {
 		const sentenceArray = [];
 		const noResultsArray = [];
 		const wordArray = compact(
-			removePunctuation(input).trim().toLowerCase().split(' ')
+			fixQuotes(removePunctuation(input)).trim().toLowerCase().split(' ')
 		);
 		wordArray.forEach((word) => {
 			const results = database.filter((phrase) => {
 				if (primaryLanguage === 'english') {
-					if (new RegExp(`\\b${word}\\b`).test(phrase.english.toLowerCase())) {
+					const englishArr = compact(fixQuotes(removePunctuation(phrase.english)).split(' '))
+					if (englishArr.includes(word)) {
 						return true;
 					}
 					return false;

@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import API from '../../lib/API';
 import { selectDatabase } from '../../slices/databaseSlice';
-import { removePunctuation } from '../../lib/util';
+import { removePunctuation, fixQuotes } from '../../lib/util';
 import {
 	AlertDialog,
 	AlertDialogBody,
@@ -21,7 +21,7 @@ import {
 	useToast,
 } from '@chakra-ui/core';
 import Table from '../../components/Table';
-import { debounce } from 'lodash-es';
+import { debounce, compact } from 'lodash-es';
 
 const Database = () => {
 	const [input, setInput] = useState();
@@ -63,7 +63,7 @@ const Database = () => {
 
 		let entries;
 		try {
-			entries = JSON.parse(input);
+			entries = JSON.parse(fixQuotes(input));
 		} catch {
 			alert('Not a valid JSON format.  Check {}/[] or put quotes around words');
 		}
@@ -112,11 +112,8 @@ const Database = () => {
 		database.forEach((obj) => {
 			const { english, korean } = obj;
 			if (radio === 'english') {
-				if (
-					new RegExp(`\\b${search.toLowerCase().trim()}\\b`).test(
-						english.toLowerCase()
-					)
-				) {
+				const englishArr = compact(fixQuotes(removePunctuation(english)).split(' '))
+				if (englishArr.includes(fixQuotes(removePunctuation(search.trim())))) {
 					resultsArr.push(obj);
 				}
 			} else {
