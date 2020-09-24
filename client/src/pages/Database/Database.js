@@ -112,8 +112,8 @@ const Database = () => {
 		database.forEach((obj) => {
 			const { english, korean } = obj;
 			if (radio === 'english') {
-				const englishArr = compact(fixQuotes(removePunctuation(english)).split(' '))
-				if (englishArr.includes(fixQuotes(removePunctuation(search.trim())))) {
+				const englishArr = compact(fixQuotes(removePunctuation(english.toLowerCase())).split(' '))
+				if (englishArr.includes(fixQuotes(removePunctuation(search.trim().toLowerCase())))) {
 					resultsArr.push(obj);
 				}
 			} else {
