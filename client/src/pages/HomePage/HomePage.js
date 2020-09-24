@@ -39,12 +39,10 @@ const HomePage = () => {
 		const wordArray = compact(
 			fixQuotes(removePunctuation(input)).trim().toLowerCase().split(' ')
 		);
-		console.log("handleSubmit -> wordArray", wordArray)
 		wordArray.forEach((word) => {
 			const results = database.filter((phrase) => {
 				if (primaryLanguage === 'english') {
 					const englishArr = compact(fixQuotes(removePunctuation(phrase.english.toLowerCase())).split(' '))
-					console.log("handleSubmit -> englishArr", englishArr)
 					if (englishArr.includes(word)) {
 						return true;
 					}
