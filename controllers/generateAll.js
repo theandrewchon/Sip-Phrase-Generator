@@ -12,13 +12,13 @@ const fixQuotes = (string) => {
 
 module.exports = {
   generate: async function (req, res) {
-    const { lang, queries } = req.query
-    if (queries.length === 0) {
-      return res.json({ empty: emptyArray, sentences: sentenceArray });
-    }
-    const database = await db.Sentences.find({})
     let emptyArray = [];
     let sentencesObj = {};
+    const { lang, queries } = req.query
+    if (queries.length === 0) {
+      return res.json({ empty: emptyArray, sentences: sentencesObj });
+    }
+    const database = await db.Sentences.find({})
     const arr = _.compact(fixQuotes(removePunctuation(queries.toLowerCase().trim())).split(' '));
 
     if (arr.length) {
