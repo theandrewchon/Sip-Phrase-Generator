@@ -97,12 +97,12 @@ module.exports = {
 				lang: lang,
 			});
 		} catch (error) {
-			res.status(400).send({ message: 'Could not get subtitles' });
+			res.status(404).send({ message: 'Could not get subtitles' });
 		}
 		const captionString = subtitles.reduce((acc, { text }) => acc + text, '');
 		const uniqueArr = Array.from(new Set(cleanKoreanText(captionString)));
 		if (uniqueArr.length === 0) {
-			return res.status(400).send({ message: 'No qualifying captions found' });
+			return res.status(204).send({ message: 'No qualifying captions found' });
 		}
 		let database = myCache.get(DB_KEY, 86400);
 
