@@ -74,15 +74,13 @@ module.exports = {
 	generateModuleFromCaption: async function (req, res) {
 		const { id, lang } = req.params;
 
-		const cachedValue = myCache.get(id);
+		const cachedValue = myCache.get(`${id}-${lang}`);
 		if (cachedValue) {
 			return res.json(cachedValue);
 		}
 
 		if (!(lang === 'en' || lang === 'ko')) {
-			return res
-				.status(400)
-				.send({ message: 'Invalid lang. Must be "en" or "ko" ' });
+			return res.status(400).send('Invalid lang. Must be "en" or "ko" ');
 		}
 
 		let emptyArray = [];
@@ -148,7 +146,7 @@ module.exports = {
 			}
 		}
 		const result = { empty: emptyArray, sentences: sentenceArray };
-		myCache.set(id, result);
+		myCache.set(`${id}-${lang}`, result);
 		return res.json(result);
 	},
 };
