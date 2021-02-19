@@ -32,10 +32,14 @@
 		"express": "^4.17.1",
 		"if-env": "^1.0.4",
 		"lodash": "^4.17.20",
-		"mongoose": "^5.10.5"
+		"mongoose": "^5.11.17",
+		"node-cache": "^5.1.2",
+		"timsort": "^0.3.0",
+		"youtube-captions-scraper": "^1.0.3"
 	},
 	"devDependencies": {
 		"concurrently": "^5.3.0",
+		"eslint": "^7.20.0",
 		"nodemon": "^2.0.4"
 	}
 }
