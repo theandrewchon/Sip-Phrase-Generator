@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const axios = require('axios');
 
 /**
  * Takes in string and returns a string with Korean letters replaced with a space
@@ -60,7 +61,8 @@ const removeEnglish = (arr) => {
 /**
  * Filters out strings containing numbers in an array
  */
-const removeNumbers = (arr) => arr.filter((word) => !/^\d+$/.test(word));
+const removeNumbers = (arr) =>
+	arr.filter((word) => !/[a-z]*\d+[a-z]*/gi.test(word));
 
 // Remove symbols and other "messy" data from KOREAN text
 const cleanKoreanText = (string) => {
@@ -85,4 +87,25 @@ const getYoutubeId = (url) => {
 	return undefined !== id[2] ? id[2].split(/[^0-9a-z_-]/i)[0] : id[0];
 };
 
-module.exports = cleanKoreanText;
+const getSubtitles = async (id, lang) => {
+	// '' handles user submitted captions, others are 3rd party company names that caption video
+	const THIRD_PARTY_NAMES = ['', 'jamake'];
+
+	for (let name of THIRD_PARTY_NAMES) {
+		const API = `https://www.youtube.com/api/timedtext?v=${id}&lang=${lang}&name=${name}&fmt=json3`;
+		const { data } = await axios
+			.get(API)
+			.catch(() => console.log('No subtitles'));
+		if (data) {
+			return data;
+		}
+	}
+
+	throw new Error();
+};
+
+module.exports = {
+	getYoutubeId,
+	getSubtitles,
+	cleanKoreanText,
+};

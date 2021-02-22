@@ -1,7 +1,6 @@
 const db = require('../models');
 const _ = require('lodash');
-const getSubtitles = require('youtube-captions-scraper').getSubtitles;
-const cleanKoreanText = require('../utils/misc');
+const utils = require('../utils/misc');
 const TimSort = require('timsort');
 const NodeCache = require('node-cache');
 
@@ -92,15 +91,17 @@ module.exports = {
 
 		let subtitles;
 		try {
-			subtitles = await getSubtitles({
-				videoID: id,
-				lang: lang,
-			});
+			subtitles = await utils.getSubtitles(id, lang);
 		} catch (error) {
-			res.status(404).send({ message: 'Could not get subtitles' });
+			res.status(404).send('Could not find subtitles');
 		}
-		const captionString = subtitles.reduce((acc, { text }) => acc + text, '');
-		const uniqueArr = Array.from(new Set(cleanKoreanText(captionString)));
+		const { events } = subtitles;
+		const captionString = events.reduce(
+			(acc, { segs }) => acc + segs[0].utf8,
+			''
+		);
+		const uniqueArr = Array.from(new Set(utils.cleanKoreanText(captionString)));
+
 		if (uniqueArr.length === 0) {
 			return res.status(204).send({ message: 'No qualifying captions found' });
 		}
