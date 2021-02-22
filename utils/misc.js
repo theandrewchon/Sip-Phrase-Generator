@@ -104,8 +104,19 @@ const getSubtitles = async (id, lang) => {
 	throw new Error();
 };
 
+const removeAllPunctuation = (string) => {
+	let regex = /[!"#$%&*+,./:;<=>?@[\]^_`{|}~]/g;
+	return string.replace(regex, '');
+};
+
+const fixQuotes = (string) => {
+	return string.replace(/[\u2018\u2019]/g, "'");
+};
+
 module.exports = {
 	getYoutubeId,
 	getSubtitles,
 	cleanKoreanText,
+	removeAllPunctuation,
+	fixQuotes,
 };

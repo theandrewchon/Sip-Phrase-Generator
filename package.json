@@ -26,6 +26,7 @@
 	},
 	"homepage": "https://github.com/theandrewchon/Sip-Phrase-Generator#readme",
 	"dependencies": {
+		"anki-apkg-export": "^4.0.3",
 		"axios": "^0.21.1",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
@@ -39,6 +40,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "^5.3.0",
+		"eslint": "^7.20.0",
 		"nodemon": "^2.0.4"
 	}
 }
