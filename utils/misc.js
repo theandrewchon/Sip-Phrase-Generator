@@ -40,7 +40,7 @@ const removeMiscCharacters = (string) => {
  * Takes in string and returns a string with punctuations replaced with a space
  */
 const removePunctuation = (string) => {
-	const punctuationRegex = /[!,.?]/g;
+	const punctuationRegex = /[!,.?…]/g;
 	return string.replace(punctuationRegex, '');
 };
 
@@ -71,6 +71,7 @@ const cleanKoreanText = (string) => {
 	cleaned = removeChineseCharacters(cleaned);
 	cleaned = removeMiscSymbols(cleaned);
 	cleaned = removeMiscCharacters(cleaned);
+	cleaned = removePunctuation(cleaned);
 
 	let cleanedArray = _.compact(cleaned.split(' '));
 	cleanedArray = removeHashtags(cleanedArray);
@@ -89,7 +90,7 @@ const getYoutubeId = (url) => {
 
 const getSubtitles = async (id, lang) => {
 	// '' handles user submitted captions, others are 3rd party company names that caption video
-	const THIRD_PARTY_NAMES = ['', 'jamake'];
+	const THIRD_PARTY_NAMES = ['', 'jamake', 'Contentsfly', 'ko'];
 
 	for (let name of THIRD_PARTY_NAMES) {
 		const API = `https://www.youtube.com/api/timedtext?v=${id}&lang=${lang}&name=${name}&fmt=json3`;
@@ -105,7 +106,7 @@ const getSubtitles = async (id, lang) => {
 };
 
 const removeAllPunctuation = (string) => {
-	let regex = /[!"#$%&*+,./:;<=>?@[\]^_`{|}~]/g;
+	let regex = /[!"#$%&*+,.…/:;<=>?@[\]^_`{|}~]/g;
 	return string.replace(regex, '');
 };
 

@@ -17,17 +17,11 @@ const searchDatabase = (database, queriesArr, lang) => {
 			for (let j = 0; j < database.length; j += 1) {
 				let sentenceArr;
 				if (lang === 'en') {
-					sentenceArr = _.compact(
-						utils
-							.fixQuotes(
-								utils.removeAllPunctuation(database[j].english.toLowerCase())
-							)
-							.split(' ')
+					sentenceArr = utils.fixQuotes(
+						utils.removeAllPunctuation(database[j].english.toLowerCase().trim())
 					);
 				} else {
-					sentenceArr = utils
-						.removeAllPunctuation(database[j].korean)
-						.split(' ');
+					sentenceArr = utils.removeAllPunctuation(database[j].korean).trim();
 				}
 				if (sentenceArr.includes(queriesArr[i])) {
 					const obj = {
@@ -54,22 +48,28 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 	const apkg = new AnkiExport(`Sip-Anki-${id}`);
 	if (sentences.length) {
 		sentences.forEach(({ query, sentence }) => {
-			const arr = utils.removeAllPunctuation(sentence.korean).split(' ');
-			const indx = arr.indexOf(query);
+			const cleanedSentence = utils
+				.removeAllPunctuation(sentence.korean)
+				.trim();
+
+			const indx = cleanedSentence.indexOf(query);
+			const beginning = cleanedSentence.slice(0, indx);
+			const underline = cleanedSentence.slice(indx, indx + query.length);
+			const end = cleanedSentence.slice(indx + query.length);
 
 			if (indx !== -1) {
-				arr[
-					indx
-				] = `<span style="border-bottom: 1px black solid; padding-bottom: 2px">${arr[indx]}</span>`;
+				const string = `${beginning}<span style="border-bottom: 1px black solid; padding-bottom: 2px">${underline}</span>${end}`;
+				apkg.addCard(string, sentence.english);
+			} else {
+				apkg.addCard(cleanedSentence, sentence.english);
 			}
-			apkg.addCard(arr.join(' '), sentence.english);
 		});
 	}
 
 	if (empty.length) {
 		empty.forEach((word) => {
 			const link = `https://en.dict.naver.com/#/search?query=${word}`;
-			apkg.addCard(word, link);
+			apkg.addCard(word, `<a href=${link}>${link}</a>`);
 		});
 	}
 

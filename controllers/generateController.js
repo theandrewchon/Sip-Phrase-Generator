@@ -90,7 +90,7 @@ module.exports = {
 			}
 			const { events } = subtitles;
 			const captionString = events.reduce(
-				(acc, { segs }) => acc + segs[0].utf8,
+				(acc, { segs }) => `${acc}${segs[0].utf8} `,
 				''
 			);
 			const uniqueArr = Array.from(
