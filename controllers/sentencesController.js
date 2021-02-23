@@ -1,12 +1,21 @@
 const db = require('../models');
+const cache = require('../utils/cache');
 
 // Defining methods for the booksController
 module.exports = {
 	findAll: function (req, res) {
-		db.Sentences.find({})
-			.sort({})
-			.then((dbModel) => res.json(dbModel))
-			.catch((err) => res.status(422).json(err));
+		let cachedDb = cache.myCache.get(cache.DB_KEY);
+		if (!cachedDb) {
+			db.Sentences.find({})
+				.sort({})
+				.then((dbModel) => {
+					cache.myCache.set(cache.myCache.DB_KEY, dbModel, 86400);
+					res.json(dbModel);
+				})
+				.catch((err) => res.status(422).json(err));
+		} else {
+			res.json(cachedDb);
+		}
 	},
 	findById: function (req, res) {
 		db.Sentences.findById(req.params.id)

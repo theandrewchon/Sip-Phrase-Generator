@@ -99,10 +99,11 @@ module.exports = {
 				res.status(204).send({ message: 'No qualifying captions found' });
 				return;
 			}
-			let database = cache.myCache.get(cache.DB_KEY, 86400);
+			let database = cache.myCache.get(cache.DB_KEY);
 
 			if (!database) {
 				database = await db.Sentences.find({});
+				cache.myCache.set(cache.DB_KEY, database, 86400);
 			}
 
 			result = moduleGeneration.searchDatabase(database, uniqueArr, lang);
