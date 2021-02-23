@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('../utils/misc');
 const db = require('../models');
+const sentenceBank = require('../sb.json');
 const moduleGeneration = require('../utils/moduleGeneration');
 const cache = require('../utils/cache');
 
@@ -99,17 +100,10 @@ module.exports = {
 				res.status(204).send({ message: 'No qualifying captions found' });
 				return;
 			}
-			let database = cache.myCache.get(cache.DB_KEY);
 
-			if (!database) {
-				database = await db.Sentences.find({});
-				cache.myCache.set(cache.DB_KEY, database, 86400);
-			}
-
-			result = moduleGeneration.searchDatabase(database, uniqueArr, lang);
+			result = moduleGeneration.searchDatabase(sentenceBank, uniqueArr, lang);
 			cache.myCache.set(`${id}-${lang}`, result);
 		}
-
 		const ankiDeck = await moduleGeneration.generateAnkiDeck(result, id);
 
 		fs.writeFileSync(
