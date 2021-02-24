@@ -5,7 +5,6 @@ const utils = require('../utils/misc');
 const db = require('../models');
 const sentenceBank = require('../sb.json');
 const moduleGeneration = require('../utils/moduleGeneration');
-const cache = require('../utils/cache');
 
 module.exports = {
 	generate: async function (req, res) {
@@ -79,31 +78,25 @@ module.exports = {
 			return;
 		}
 
-		let result = cache.myCache.get(`${id}-${lang}`);
-		if (!result) {
-			let subtitles;
-			try {
-				subtitles = await utils.getSubtitles(id, lang);
-			} catch (error) {
-				res.status(404).send('Could not find subtitles');
-				return;
-			}
-			const { events } = subtitles;
-			const captionString = events.reduce(
-				(acc, { segs }) => `${acc}${segs[0].utf8} `,
-				''
-			);
-			const uniqueArr = Array.from(
-				new Set(utils.cleanKoreanText(captionString))
-			);
-			if (uniqueArr.length === 0) {
-				res.status(204).send({ message: 'No qualifying captions found' });
-				return;
-			}
-
-			result = moduleGeneration.searchDatabase(sentenceBank, uniqueArr, lang);
-			cache.myCache.set(`${id}-${lang}`, result);
+		let subtitles;
+		try {
+			subtitles = await utils.getSubtitles(id, lang);
+		} catch (error) {
+			res.status(404).send('Could not find subtitles');
+			return;
 		}
+		const { events } = subtitles;
+		const captionString = events.reduce(
+			(acc, { segs }) => `${acc}${segs[0].utf8} `,
+			''
+		);
+		const uniqueArr = Array.from(new Set(utils.cleanKoreanText(captionString)));
+		if (uniqueArr.length === 0) {
+			res.status(204).send({ message: 'No qualifying captions found' });
+			return;
+		}
+
+		result = moduleGeneration.searchDatabase(sentenceBank, uniqueArr, lang);
 		const ankiDeck = await moduleGeneration.generateAnkiDeck(result, id);
 
 		fs.writeFileSync(
