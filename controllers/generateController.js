@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('../utils/misc');
 const db = require('../models');
-const sentenceBank = require('../sb.json');
 const moduleGeneration = require('../utils/moduleGeneration');
 
 module.exports = {
@@ -68,7 +67,7 @@ module.exports = {
 	generateModuleFromCaption: async function (req, res) {
 		const { id, lang } = req.params;
 
-		if (!(lang === 'en' || lang === 'ko')) {
+		if (!(lang === utils.LANG_MAP.english || lang === utils.LANG_MAP.korean)) {
 			res.status(400).send('Invalid lang. Must be "en" or "ko" ');
 			return;
 		}
@@ -96,7 +95,7 @@ module.exports = {
 			return;
 		}
 
-		result = moduleGeneration.searchDatabase(sentenceBank, uniqueArr, lang);
+		const result = await moduleGeneration.searchDatabase(uniqueArr, lang);
 		const ankiDeck = await moduleGeneration.generateAnkiDeck(result, id);
 
 		fs.writeFileSync(

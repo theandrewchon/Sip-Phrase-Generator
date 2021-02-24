@@ -114,10 +114,16 @@ const fixQuotes = (string) => {
 	return string.replace(/[\u2018\u2019]/g, "'");
 };
 
+const LANG_MAP = {
+	english: 'en',
+	korean: 'ko',
+};
+
 module.exports = {
 	getYoutubeId,
 	getSubtitles,
 	cleanKoreanText,
 	removeAllPunctuation,
 	fixQuotes,
+	LANG_MAP,
 };

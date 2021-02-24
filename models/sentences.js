@@ -6,6 +6,7 @@ const sentencesSchema = new Schema({
 	korean: { type: String, required: true },
 });
 
+sentencesSchema.path('korean').index({ text: true });
 const Sentences = mongoose.model('Sentences', sentencesSchema);
 
 module.exports = Sentences;
