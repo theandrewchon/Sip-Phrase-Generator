@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const cache = require('../utils/cache');
 const TimSort = require('timsort');
 const utils = require('../utils/misc');
@@ -46,6 +48,32 @@ const searchDatabase = (database, queriesArr, lang) => {
 const generateAnkiDeck = async (sentenceObj, id) => {
 	const { empty, sentences } = sentenceObj;
 	const apkg = new AnkiExport(`Sip-Anki-${id}`);
+
+	const discord = 'https://discord.gg/Zq6Zrkh';
+	const reddit = 'https://www.reddit.com/r/siplanguage/';
+	const email = 'sip@siplanguage.com';
+	const feedback = 'https://forms.gle/BhrotqApoJoKDVea7';
+
+	const links = `
+		<p>Message us on discord, reddit, or email  if you have any questions!</p>
+		<div style="padding: 12px"><a href="${discord}">Discord</a></div>
+		<div style="padding: 12px"><a href="${reddit}">Reddit</a></div>
+		<div style="padding: 12px"><a href="${email}">${email}</a></div>
+	`;
+
+	const end = `
+	<div style="padding: 12px"><a href="https://www.youtube.com/watch?v=${id}">YouTube Link</a></div>
+	<div style="padding: 12px"><a href="${feedback}">Leave us some feedback</a></div>
+
+	`;
+	apkg.addMedia(
+		'description.png',
+		fs.readFileSync(path.resolve(__dirname, '../assets/description.jpg'))
+	);
+
+	// Initial card
+	apkg.addCard('<img src=description.png />', links);
+
 	if (sentences.length) {
 		sentences.forEach(({ query, sentence }) => {
 			const cleanedSentence = utils
@@ -72,6 +100,8 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 			apkg.addCard(word, `<a href=${link}>${link}</a>`);
 		});
 	}
+
+	apkg.addCard(end);
 
 	const deck = await apkg.save();
 	return deck;
