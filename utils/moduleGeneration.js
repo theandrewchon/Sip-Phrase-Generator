@@ -1,46 +1,37 @@
 const fs = require('fs');
 const path = require('path');
 const cache = require('../utils/cache');
+const db = require('../models');
 const TimSort = require('timsort');
 const utils = require('../utils/misc');
 const AnkiExport = require('anki-apkg-export').default;
 
-const searchDatabase = (database, queriesArr, lang) => {
+const searchDatabase = async (queriesArr, lang) => {
 	let emptyArray = [];
 	let sentenceArray = [];
 
-	TimSort.sort(database, (a, b) => {
-		return a.english.length - b.english.length;
-	});
-
-	for (let i = 0; i < queriesArr.length; i += 1) {
-		let result = cache.myCache.get(queriesArr[i]);
+	for (let query of queriesArr) {
+		let result = cache.myCache.get(query);
 		if (!result) {
-			for (let j = 0; j < database.length; j += 1) {
-				let sentenceArr;
-				if (lang === 'en') {
-					sentenceArr = utils.fixQuotes(
-						utils.removeAllPunctuation(database[j].english.toLowerCase().trim())
-					);
+			await db.Sentences.find({ $text: { $search: query } }).then((db) => {
+				if (db.length) {
+					if (lang === utils.LANG_MAP.korean) {
+						TimSort.sort(db, (a, b) => {
+							return a.korean.split(' ').length - b.korean.split(' ').length;
+						});
+					} else {
+						TimSort.sort(db, (a, b) => {
+							return a.english.split(' ').length - b.english.split(' ').length;
+						});
+					}
+					result = { query, sentence: db[0] };
+					cache.myCache.set(query, result);
 				} else {
-					sentenceArr = utils.removeAllPunctuation(database[j].korean).trim();
+					emptyArray.push(query);
 				}
-				if (sentenceArr.includes(queriesArr[i])) {
-					const obj = {
-						query: queriesArr[i],
-						sentence: database[j],
-					};
-					result = obj;
-					cache.myCache.set(queriesArr[i], obj);
-					break;
-				}
-			}
+			});
 		}
-		if (result) {
-			sentenceArray.push(result);
-		} else {
-			emptyArray.push(queriesArr[i]);
-		}
+		sentenceArray.push(result);
 	}
 	return { empty: emptyArray, sentences: sentenceArray };
 };
@@ -67,12 +58,12 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 
 	`;
 	apkg.addMedia(
-		'description.png',
-		fs.readFileSync(path.resolve(__dirname, '../assets/description.jpg'))
+		'anki-description.png',
+		fs.readFileSync(path.resolve(__dirname, '../assets/anki-description.png'))
 	);
 
 	// Initial card
-	apkg.addCard('<img src=description.png />', links);
+	apkg.addCard('<img src=anki-description.png />', links);
 
 	if (sentences.length) {
 		sentences.forEach(({ query, sentence }) => {
@@ -86,7 +77,7 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 			const end = cleanedSentence.slice(indx + query.length);
 
 			if (indx !== -1) {
-				const string = `${beginning}<span style="border-bottom: 1px black solid; padding-bottom: 2px">${underline}</span>${end}`;
+				const string = `${beginning}<u>${underline}</u>${end}`;
 				apkg.addCard(string, sentence.english);
 			} else {
 				apkg.addCard(cleanedSentence, sentence.english);
