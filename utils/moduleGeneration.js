@@ -11,28 +11,31 @@ const searchDatabase = async (queriesArr, lang) => {
 	let sentenceArray = [];
 
 	for (let query of queriesArr) {
-		let result = cache.myCache.get(query);
-		if (!result) {
-			await db.Sentences.find({ $text: { $search: query } }).then((db) => {
-				if (db.length) {
-					if (lang === utils.LANG_MAP.korean) {
-						TimSort.sort(db, (a, b) => {
-							return a.korean.split(' ').length - b.korean.split(' ').length;
-						});
-					} else {
-						TimSort.sort(db, (a, b) => {
-							return a.english.split(' ').length - b.english.split(' ').length;
-						});
-					}
-					result = { query, sentence: db[0] };
-					cache.myCache.set(query, result);
-				} else {
-					emptyArray.push(query);
-				}
-			});
+		const results = cache.myCache.get(query);
+		if (results) {
+			sentenceArray.push(results);
+			continue;
 		}
-		sentenceArray.push(result);
+		await db.Sentences.find({ $text: { $search: query } }).then((db) => {
+			if (db.length) {
+				if (lang === utils.LANG_MAP.korean) {
+					TimSort.sort(db, (a, b) => {
+						return a.korean.split(' ').length - b.korean.split(' ').length;
+					});
+				} else {
+					TimSort.sort(db, (a, b) => {
+						return a.english.split(' ').length - b.english.split(' ').length;
+					});
+				}
+				const results = { query, sentence: db[0] };
+				sentenceArray.push(results);
+				cache.myCache.set(query, results);
+			} else {
+				emptyArray.push(query);
+			}
+		});
 	}
+
 	return { empty: emptyArray, sentences: sentenceArray };
 };
 
@@ -59,12 +62,12 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 	`;
 	apkg.addMedia(
 		'anki-description.png',
+		// eslint-disable-next-line no-undef
 		fs.readFileSync(path.resolve(__dirname, '../assets/anki-description.png'))
 	);
 
 	// Initial card
 	apkg.addCard('<img src=anki-description.png />', links);
-
 	if (sentences.length) {
 		sentences.forEach(({ query, sentence }) => {
 			const cleanedSentence = utils
@@ -95,6 +98,7 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 	apkg.addCard(end);
 
 	const deck = await apkg.save();
+	console.log(cache.myCache.getStats());
 	return deck;
 };
 
