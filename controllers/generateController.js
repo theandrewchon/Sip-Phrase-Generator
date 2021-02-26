@@ -95,18 +95,22 @@ module.exports = {
 			return;
 		}
 
-		const result = await moduleGeneration.searchDatabase(uniqueArr, lang);
-		const csvFile = await moduleGeneration.generateAnkiDeck(result, id);
+		try {
+			const result = await moduleGeneration.searchDatabase(uniqueArr, lang);
+			const csvFile = await moduleGeneration.generateAnkiDeck(result, id);
 
-		fs.writeFile(`${id}-csv.txt`, csvFile, 'utf8', (err) => {
-			if (err) throw err;
-			res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
-			res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
-				// eslint-disable-next-line no-undef
-				fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
+			fs.writeFile(`${id}-csv.txt`, csvFile, 'utf8', (err) => {
+				if (err) throw err;
+				res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
+				res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
+					// eslint-disable-next-line no-undef
+					fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
+				});
+				console.log('File has bee nsaved');
 			});
-			console.log('File has bee nsaved');
-		});
-		return;
+			return;
+		} catch (error) {
+			res.status(500).send('Error during module creation');
+		}
 	},
 };
