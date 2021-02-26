@@ -67,6 +67,17 @@ module.exports = {
 	generateModuleFromCaption: async function (req, res) {
 		const { id, lang } = req.params;
 
+		const exists = fs.existsSync(path.resolve(__dirname, `../${id}-csv.txt`));
+
+		if (exists) {
+			res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
+			res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
+				// eslint-disable-next-line no-undef
+				fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
+			});
+			return;
+		}
+
 		if (!(lang === utils.LANG_MAP.english || lang === utils.LANG_MAP.korean)) {
 			res.status(400).send('Invalid lang. Must be "en" or "ko" ');
 			return;
@@ -101,12 +112,7 @@ module.exports = {
 
 			fs.writeFile(`${id}-csv.txt`, csvFile, 'utf8', (err) => {
 				if (err) throw err;
-				res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
-				res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
-					// eslint-disable-next-line no-undef
-					fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
-				});
-				console.log('File has bee nsaved');
+				res.sendStatus(200);
 			});
 			return;
 		} catch (error) {

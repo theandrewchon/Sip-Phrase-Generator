@@ -11,7 +11,7 @@ const sentencesToCSV = (data) => {
 			const beginning = cleanedSentence.slice(0, indx);
 			const underline = cleanedSentence.slice(indx, indx + query.length);
 			const end = cleanedSentence.slice(indx + query.length);
-			row = `"${beginning}<u>${underline}</u>${end}","${sentence.english}"`;
+			row = `"${beginning}<b>${underline}</b>${end}","${sentence.english}"`;
 		} else {
 			row = `"${sentence.korean}","${sentence.english}"`;
 		}
