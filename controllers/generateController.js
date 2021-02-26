@@ -96,18 +96,16 @@ module.exports = {
 		}
 
 		const result = await moduleGeneration.searchDatabase(uniqueArr, lang);
-		const ankiDeck = await moduleGeneration.generateAnkiDeck(result, id);
+		const csvFile = await moduleGeneration.generateAnkiDeck(result, id);
 
-		fs.writeFileSync(
-			// eslint-disable-next-line no-undef
-			path.resolve(__dirname, '../output.apkg'),
-			ankiDeck,
-			'binary'
-		);
-		res.setHeader('Content-Disposition', 'filename=' + 'download.apkg');
-		res.download(path.resolve('output.apkg'), `Sip-anki-${id}.apkg`, () => {
-			// eslint-disable-next-line no-undef
-			fs.unlinkSync(path.resolve(__dirname, '../output.apkg'));
+		fs.writeFile(`${id}-csv.txt`, csvFile, 'utf8', (err) => {
+			if (err) throw err;
+			res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
+			res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
+				// eslint-disable-next-line no-undef
+				fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
+			});
+			console.log('File has bee nsaved');
 		});
 		return;
 	},
