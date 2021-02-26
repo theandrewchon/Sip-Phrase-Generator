@@ -67,10 +67,6 @@ module.exports = {
 	generateModuleFromCaption: async function (req, res) {
 		const { id, lang } = req.params;
 
-		req.on('end', () => {
-			res.connection.end();
-		});
-
 		if (!(lang === utils.LANG_MAP.english || lang === utils.LANG_MAP.korean)) {
 			res.status(400).send('Invalid lang. Must be "en" or "ko" ');
 			return;

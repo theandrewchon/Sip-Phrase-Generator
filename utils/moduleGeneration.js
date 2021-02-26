@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const cache = require('../utils/cache');
 const db = require('../models');
 const TimSort = require('timsort');
 const utils = require('../utils/misc');
@@ -11,11 +10,6 @@ const searchDatabase = async (queriesArr, lang) => {
 	let sentenceArray = [];
 
 	for (let query of queriesArr) {
-		const results = cache.myCache.get(query);
-		if (results) {
-			sentenceArray.push(results);
-			continue;
-		}
 		await db.Sentences.find({ $text: { $search: query } }).then((db) => {
 			if (db.length) {
 				if (lang === utils.LANG_MAP.korean) {
@@ -29,7 +23,6 @@ const searchDatabase = async (queriesArr, lang) => {
 				}
 				const results = { query, sentence: db[0] };
 				sentenceArray.push(results);
-				cache.myCache.set(query, results);
 			} else {
 				emptyArray.push(query);
 			}
@@ -98,7 +91,6 @@ const generateAnkiDeck = async (sentenceObj, id) => {
 	apkg.addCard(end);
 
 	const deck = await apkg.save();
-	console.log(cache.myCache.getStats());
 	return deck;
 };
 
