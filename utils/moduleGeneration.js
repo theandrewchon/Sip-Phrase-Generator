@@ -4,16 +4,22 @@ const utils = require('../utils/misc');
 
 const sentencesToCSV = (data) => {
 	return data.map(({ sentence, query }) => {
-		const cleanedSentence = utils.removeAllPunctuation(sentence.korean).trim();
+		const regex = /"/g;
+		const cleanedSentence = utils
+			.removeAllPunctuation(sentence.korean.replace(regex, '""'))
+			.trim();
 		const indx = cleanedSentence.indexOf(query);
 		let row;
 		if (indx !== -1) {
 			const beginning = cleanedSentence.slice(0, indx);
 			const underline = cleanedSentence.slice(indx, indx + query.length);
 			const end = cleanedSentence.slice(indx + query.length);
-			row = `"${beginning}<b>${underline}</b>${end}","${sentence.english}"`;
+			row = `"${beginning}<b>${underline}</b>${end}","${sentence.english.replace(
+				regex,
+				'""'
+			)}"`;
 		} else {
-			row = `"${sentence.korean}","${sentence.english}"`;
+			row = `"${sentence.korean}","${sentence.english.replace(regex, '""')}"`;
 		}
 		return row;
 	});
