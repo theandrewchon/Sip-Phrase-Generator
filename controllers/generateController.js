@@ -109,7 +109,6 @@ module.exports = {
 		try {
 			const result = await moduleGeneration.searchDatabase(uniqueArr, lang);
 			const csvFile = await moduleGeneration.generateAnkiDeck(result, id);
-
 			fs.writeFile(`${id}-csv.txt`, csvFile, 'utf8', (err) => {
 				if (err) throw err;
 				res.sendStatus(200);
