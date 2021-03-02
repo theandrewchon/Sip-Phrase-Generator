@@ -6,7 +6,7 @@ const sentencesToCSV = (data) => {
 	return data.map(({ sentence, query }) => {
 		const regex = /"/g;
 		const cleanedSentence = utils
-			.removeAllPunctuation(sentence[0].korean.replace(regex, '""'))
+			.removeAllPunctuation(sentence.korean.replace(regex, '""'))
 			.trim()
 			.split(' ');
 
@@ -21,7 +21,9 @@ const sentencesToCSV = (data) => {
 				cleanedSentence[i] = `${beginning}<b>${underline}</b>${end}`;
 			}
 
-			cleanedSentence[i] = `<a href=${link}>${cleanedSentence[i]}</a>`;
+			cleanedSentence[
+				i
+			] = `<a style=text-decoration:none href=${link}>${cleanedSentence[i]}</a>`;
 		}
 
 		return `"${cleanedSentence.join(' ')}","${sentence.english.replace(
