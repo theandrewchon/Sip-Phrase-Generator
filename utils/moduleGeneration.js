@@ -33,7 +33,7 @@ const sentencesToCSV = (data) => {
 		if (exampleSentences.length) {
 			back += `<p>Additional example sentences:</p>`
 			exampleSentences.forEach(({ korean, english }) => {
-				back += `<p><div>English: ${english.replace(regex, '""')}</div><div>Korean: ${korean.replace(regex, '""')}</div></p>`
+				back += `<p><div>${korean.replace(regex, '""')}</div><div>${english.replace(regex, '""')}</div></p>`
 			})
 		}
 
