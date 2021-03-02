@@ -6,9 +6,10 @@ const sentencesToCSV = (data) => {
 	return data.map(({ sentence, query }) => {
 		const regex = /"/g;
 		const cleanedSentence = utils
-			.removeAllPunctuation(sentence.korean.replace(regex, '""'))
+			.removeAllPunctuation(sentence[0].korean.replace(regex, '""'))
 			.trim()
 			.split(' ');
+		const exampleSentences = sentence.slice(1)
 
 		for (let i = 0; i < cleanedSentence.length; i += 1) {
 			const link = `https://en.dict.naver.com/#/search?query=${cleanedSentence[i]}`;
@@ -26,10 +27,17 @@ const sentencesToCSV = (data) => {
 			] = `<a style=text-decoration:none href=${link}>${cleanedSentence[i]}</a>`;
 		}
 
-		return `"${cleanedSentence.join(' ')}","${sentence.english.replace(
-			regex,
-			'""'
-		)}"`;
+
+		let back = `<div>${sentence[0].english.replace(regex, '""')}</div>`
+
+		if (exampleSentences.length) {
+			back += `<p>Additional example sentences:</p>`
+			exampleSentences.forEach(({ korean, english }) => {
+				back += `<p><div>English: ${english.replace(regex, '""')}</div><div>Korean: ${korean.replace(regex, '""')}</div></p>`
+			})
+		}
+
+		return `"${cleanedSentence.join(' ')}","${back}"`;
 	});
 };
 
@@ -57,7 +65,7 @@ const searchDatabase = async (queriesArr, lang) => {
 						return a.english.split(' ').length - b.english.split(' ').length;
 					});
 				}
-				const results = { query, sentence: db[0] };
+				const results = { query, sentence: db.splice(0, 4) };
 				sentenceArray.push(results);
 			} else {
 				emptyArray.push(query);
