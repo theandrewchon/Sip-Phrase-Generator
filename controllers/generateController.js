@@ -65,17 +65,14 @@ module.exports = {
 	},
 
 	generateModuleFromCaption: async function (req, res) {
-		const { id, lang } = req.params;
+		const { id, wordlist } = req.body;
+		const lang = utils.LANG_MAP.korean
 
 		const exists = fs.existsSync(path.resolve(__dirname, `../${id}-csv.txt`));
 
 		if (exists) {
-			res.setHeader('Content-Disposition', 'filename=' + `${id}-csv.txt`);
-			res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
-				// eslint-disable-next-line no-undef
-				fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
-			});
-			return;
+			res.send('exists')
+			return
 		}
 
 		if (!(lang === utils.LANG_MAP.english || lang === utils.LANG_MAP.korean)) {
@@ -83,23 +80,12 @@ module.exports = {
 			return;
 		}
 
-		if (id.length !== 11) {
-			res.status(400).send({ message: 'ID is not 11 characters' });
+		if (id.length !== 11 || wordlist.length === 0) {
+			res.status(400).send({ message: 'Invalid link' });
 			return;
 		}
 
-		let subtitles;
-		try {
-			subtitles = await utils.getSubtitles(id, lang);
-		} catch (error) {
-			res.status(404).send('Could not find subtitles');
-			return;
-		}
-		const { events } = subtitles;
-		const captionString = events.reduce(
-			(acc, { segs }) => `${acc}${segs[0].utf8} `,
-			''
-		);
+		const captionString = wordlist.join(' ')
 		const uniqueArr = Array.from(new Set(utils.cleanKoreanText(captionString)));
 		if (uniqueArr.length === 0) {
 			res.status(204).send({ message: 'No qualifying captions found' });
@@ -118,4 +104,21 @@ module.exports = {
 			res.status(500).send('Error during module creation');
 		}
 	},
+
+	getAnkiFile: function (req, res) {
+		const { id } = req.params
+		const exists = fs.existsSync(path.resolve(__dirname, `../${id}-csv.txt`));
+
+		if (exists) {
+			res.setHeader('Content-Disposition', 'attachment; filename=' + `${id}-csv.txt`);
+			res.download(path.resolve(`${id}-csv.txt`), `${id}-csv.txt`, () => {
+				// eslint-disable-next-line no-undef
+				fs.unlinkSync(path.resolve(__dirname, `../${id}-csv.txt`));
+			});
+			return;
+		} else {
+			res.status(404)
+		}
+	}
 };
+
