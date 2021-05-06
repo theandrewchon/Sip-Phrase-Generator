@@ -135,6 +135,7 @@ const HomePage = () => {
 															type: 'phrase',
 															content: `${e.sentence.english}`,
 															translation: `${e.sentence.korean}`,
+															notes: [],
 															examples: [],
 														},
 														null,
@@ -142,19 +143,20 @@ const HomePage = () => {
 													)}
 												</code>
 											) : (
-													<code>
-														{JSON.stringify(
-															{
-																type: 'phrase',
-																content: `${e.sentence.korean}`,
-																translation: `${e.sentence.english}`,
-																examples: [],
-															},
-															null,
-															4
-														)}
-													</code>
-												)
+												<code>
+													{JSON.stringify(
+														{
+															type: 'phrase',
+															content: `${e.sentence.korean}`,
+															translation: `${e.sentence.english}`,
+															notes: [],
+															examples: [],
+														},
+														null,
+														4
+													)}
+												</code>
+											)
 										) : primaryLanguage === 'english' ? (
 											<code>
 												{JSON.stringify(
@@ -163,6 +165,7 @@ const HomePage = () => {
 														word: e.query,
 														content: `${e.sentence.english}`,
 														translation: `${e.sentence.korean}`,
+														notes: [],
 														examples: [],
 													},
 													null,
@@ -170,21 +173,22 @@ const HomePage = () => {
 												)}
 											</code>
 										) : (
-													<code>
-														{JSON.stringify(
-															{
-																type: 'word',
-																word: e.query,
-																content: `${e.sentence.korean}`,
-																translation: `${e.sentence.english}`,
-																examples: [],
-															},
-															null,
-															4
-														)}
-													</code>
+											<code>
+												{JSON.stringify(
+													{
+														type: 'word',
+														word: e.query,
+														content: `${e.sentence.korean}`,
+														translation: `${e.sentence.english}`,
+														notes: [],
+														examples: [],
+													},
+													null,
+													4
 												)}
-										{}
+											</code>
+										)}
+										{ }
 
 										{index !== results.sentences.length - 1 ? ',' : ''}
 									</pre>
