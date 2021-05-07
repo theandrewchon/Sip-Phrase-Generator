@@ -70,7 +70,7 @@ const Database = () => {
 		if (!Array.isArray(entries)) {
 			return alert('Needs to be an array. Enclose object with [ ]');
 		}
-		const validOjbectKeys = ['english', 'korean', 'notes'];
+		const validOjbectKeys = ['english', 'korean'];
 		const validation = entries.every((item) =>
 			validateObject(item, validOjbectKeys)
 		);
