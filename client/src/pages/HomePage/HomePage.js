@@ -124,18 +124,50 @@ const HomePage = () => {
 							Copy results
 						</Button>
 						<div id="json">
-							{results.sentences.map((e, index) => (
-								<div key={index}>
-									<pre>
-										{jsonType === 'phrase' ? (
-											primaryLanguage === 'english' ? (
+							{results.sentences.map((e, index) => {
+								const { sentence: { english, korean, notes } } = e
+								return (
+									<div key={e.sentence['_id']}>
+										<pre>
+											{jsonType === 'phrase' ? (
+												primaryLanguage === 'english' ? (
+													<code>
+														{JSON.stringify(
+															{
+																type: 'phrase',
+																content: `${english}`,
+																translation: `${korean}`,
+																notes: notes.length ? notes : [],
+																examples: [],
+															},
+															null,
+															4
+														)}
+													</code>
+												) : (
+													<code>
+														{JSON.stringify(
+															{
+																type: 'phrase',
+																content: `${korean}`,
+																translation: `${english}`,
+																notes: notes.length ? notes : [],
+																examples: [],
+															},
+															null,
+															4
+														)}
+													</code>
+												)
+											) : primaryLanguage === 'english' ? (
 												<code>
 													{JSON.stringify(
 														{
-															type: 'phrase',
-															content: `${e.sentence.english}`,
-															translation: `${e.sentence.korean}`,
-															notes: [],
+															type: 'word',
+															word: e.query,
+															content: `${english}`,
+															translation: `${korean}`,
+															notes: notes.length ? notes : [],
 															examples: [],
 														},
 														null,
@@ -146,54 +178,25 @@ const HomePage = () => {
 												<code>
 													{JSON.stringify(
 														{
-															type: 'phrase',
-															content: `${e.sentence.korean}`,
-															translation: `${e.sentence.english}`,
-															notes: [],
+															type: 'word',
+															word: e.query,
+															content: `${korean}`,
+															translation: `${english}`,
+															notes: notes.length ? notes : [],
 															examples: [],
 														},
 														null,
 														4
 													)}
 												</code>
-											)
-										) : primaryLanguage === 'english' ? (
-											<code>
-												{JSON.stringify(
-													{
-														type: 'word',
-														word: e.query,
-														content: `${e.sentence.english}`,
-														translation: `${e.sentence.korean}`,
-														notes: [],
-														examples: [],
-													},
-													null,
-													4
-												)}
-											</code>
-										) : (
-											<code>
-												{JSON.stringify(
-													{
-														type: 'word',
-														word: e.query,
-														content: `${e.sentence.korean}`,
-														translation: `${e.sentence.english}`,
-														notes: [],
-														examples: [],
-													},
-													null,
-													4
-												)}
-											</code>
-										)}
-										{ }
+											)}
+											{ }
 
-										{index !== results.sentences.length - 1 ? ',' : ''}
-									</pre>
-								</div>
-							))}
+											{index !== results.sentences.length - 1 ? ',' : ''}
+										</pre>
+									</div>
+								)
+							})}
 						</div>
 					</Box>
 					<Box bg="red.200" p={3}>
